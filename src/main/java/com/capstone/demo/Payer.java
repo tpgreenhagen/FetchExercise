@@ -2,7 +2,7 @@ package com.capstone.demo;
 
 
 /**
- * This class represents each payer and their total balance.
+ * This class represents each payer and their total points.
  * 
  * @author Tanner Greenhagen
  *
@@ -12,22 +12,22 @@ public class Payer {
 	private String payer;
 	private int points;
 	
-	public Payer(String name, int balance) {
+	public Payer(String payer, int points) {
 		super();
-		this.payer = name;
-		this.points = balance;
+		this.payer = payer;
+		this.points = points;
 	}
-	public String getName() {
+	public String getPayer() {
 		return payer;
 	}
-	public void setName(String name) {
-		this.payer = name;
+	public void setPayer(String payer) {
+		this.payer = payer;
 	}
-	public int getBalance() {
+	public int getPoints() {
 		return points;
 	}
-	public void setBalance(int balance) {
-		this.points = balance;
+	public void setPoints(int points) {
+		this.points = points;
 	}
 	
 	

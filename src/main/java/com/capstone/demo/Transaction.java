@@ -21,10 +21,10 @@ public class Transaction
 		this.points = points;
 		this.timestamp = timestamp;
 	}
-	public String getName() {
+	public String getPayer() {
 		return payer;
 	}
-	public void setName(String payer) {
+	public void setPayer(String payer) {
 		this.payer = payer;
 	}
 	public Integer getPoints() {
@@ -33,10 +33,10 @@ public class Transaction
 	public void setPoints(Integer points) {
 		this.points = points;
 	}
-	public Date getDate() {
+	public Date getTimestamp() {
 		return timestamp;
 	}
-	public void setDate(Date timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 	

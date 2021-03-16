@@ -2,15 +2,12 @@ package com.capstone.demo;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -56,9 +53,9 @@ public class FetchController {
 		for(int i = 0 ; i <payerList.size();i++) {
 			
 			//Updates payer's balance if payer already in list
-			if (payerList.get(i).getName().equals(transaction.getName())) {
+			if (payerList.get(i).getPayer().equals(transaction.getPayer())) {
 				
-				payerList.get(i).setBalance(payerList.get(i).getBalance()+transaction.getPoints());
+				payerList.get(i).setPoints(payerList.get(i).getPoints()+transaction.getPoints());
 				i = payerList.size();
 				in = true;
 			}
@@ -67,7 +64,7 @@ public class FetchController {
 		
 		//Adds payer if not in list
 		if (!in) {
-			Payer payer = new Payer(transaction.getName(),transaction.getPoints());
+			Payer payer = new Payer(transaction.getPayer(),transaction.getPoints());
 			payerList.add(payer);
 		}
 		return transaction;
@@ -79,8 +76,14 @@ public class FetchController {
 	 * @return
 	 */
 	@RequestMapping("get")
-	public Vector<Payer> getPayers(){
-		return payerList;
+	public Hashtable<String,Integer> getPayers(){
+		Hashtable<String,Integer> payerBalances = new Hashtable<String, Integer>();
+		for(int i = 0; i<payerList.size();i++) {
+			payerBalances.put(payerList.get(i).getPayer(),payerList.get(i).getPoints());
+		}
+		
+		
+		return payerBalances;
 	}
 	
 	/**
@@ -101,7 +104,7 @@ public class FetchController {
 		//Sorts based on timestamp
 		Collections.sort(transactionList, new Comparator<Transaction>() {
 			public int compare(Transaction T1, Transaction T2) {
-				return T1.getDate().compareTo(T2.getDate());
+				return T1.getTimestamp().compareTo(T2.getTimestamp());
 			}
 		});
 		
@@ -115,8 +118,8 @@ public class FetchController {
 		//Updates payers' balances
 		for(int i = 0; i <payerList.size();i++) {
 			for(int j = 0; j <payersChanged.size();j++) {
-				if(payerList.get(i).getName().equals(payersChanged.get(j).getName())) {
-					payerList.get(i).setBalance(payerList.get(i).getBalance()+payersChanged.get(j).getBalance());
+				if(payerList.get(i).getPayer().equals(payersChanged.get(j).getPayer())) {
+					payerList.get(i).setPoints(payerList.get(i).getPoints()+payersChanged.get(j).getPoints());
 					j = payersChanged.size();
 				}
 			}
@@ -158,15 +161,15 @@ public class FetchController {
 			
 			//Updates payers who have already been added to payersChanged
 			for(int i = 0; i <payersChanged.size();i++) {
-				if(transactionList.get(transactionsUsed).getName().equals(payersChanged.get(i).getName())) {
+				if(transactionList.get(transactionsUsed).getPayer().equals(payersChanged.get(i).getPayer())) {
 					in = true;
-					payersChanged.get(i).setBalance(added+payersChanged.get(i).getBalance()-transactionList.get(transactionsUsed).getPoints());
+					payersChanged.get(i).setPoints(added+payersChanged.get(i).getPoints()-transactionList.get(transactionsUsed).getPoints());
 				}
 			}
 			
 			//Adds payers to payersChanged if they were not in it
 			if(!in) {
-				Payer payer = new Payer(transactionList.get(transactionsUsed).getName(),added-transactionList.get(transactionsUsed).getPoints());
+				Payer payer = new Payer(transactionList.get(transactionsUsed).getPayer(),added-transactionList.get(transactionsUsed).getPoints());
 				payersChanged.add(payer);
 			}
 			
